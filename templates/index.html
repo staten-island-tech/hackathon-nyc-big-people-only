@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Car Parking Simulator</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>🚗 Car Parking Simulator</h1>
+    <canvas id="parkingLot" width="600" height="400"></canvas>
+    <button onclick="parkCar()">Park Car</button>
+
+    <script>
+        const canvas = document.getElementById('parkingLot');
+        const ctx = canvas.getContext('2d');
+
+        // Draw parking lot
+        ctx.fillStyle = '#ddd';
+        ctx.fillRect(0, 0, 600, 400);
+
+        // Draw a car
+        let carX = 50;
+        let carY = 300;
+        const carWidth = 50;
+        const carHeight = 30;
+
+        function drawCar() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#ddd';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(carX, carY, carWidth, carHeight);
+        }
+
+        drawCar();
+
+        // Move car with arrow keys
+        window.addEventListener('keydown', function(e) {
+            if (e.key === "ArrowLeft") carX -= 10;
+            if (e.key === "ArrowRight") carX += 10;
+            if (e.key === "ArrowUp") carY -= 10;
+            if (e.key === "ArrowDown") carY += 10;
+            drawCar();
+        });
+
+        function parkCar() {
+            fetch("/park", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ x: carX, y: carY })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message));
+        }
+    </script>
+</body>
+</html>
